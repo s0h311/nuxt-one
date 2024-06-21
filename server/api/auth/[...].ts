@@ -1,7 +1,8 @@
-import { NuxtAuthHandler } from '#auth'
-import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
+import TwitterProvider from 'next-auth/providers/twitter'
+import { NuxtAuthHandler } from '#auth'
+import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '~/server/database/client'
 import { accounts, authenticators, sessions, users, verificationTokens } from '~/server/database/schemas/auth'
 
@@ -27,6 +28,12 @@ export default NuxtAuthHandler({
     GoogleProvider.default({
       clientId: auth.google.clientId,
       clientSecret: auth.google.clientSecret,
+    }),
+    // @ts-expect-error
+    TwitterProvider.default({
+      clientId: auth.twitter.clientId,
+      clientSecret: auth.twitter.clientSecret,
+      version: '2.0',
     }),
   ],
 })

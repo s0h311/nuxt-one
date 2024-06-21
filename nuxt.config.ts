@@ -6,6 +6,7 @@ export default defineNuxtConfig({
       type: 'authjs',
     },
   },
+  // Do not set the keys here. Use .env instead
   runtimeConfig: {
     databaseConnectionString: '',
     auth: {
@@ -17,6 +18,17 @@ export default defineNuxtConfig({
       google: {
         clientId: '',
         clientSecret: '',
+      },
+      twitter: {
+        clientId: '',
+        clientSecret: '',
+      },
+    },
+    payment: {
+      stripe: {
+        publishableKey: '',
+        secretKey: '',
+        whsec: '',
       },
     },
   },
