@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "gen:migration": "drizzle-kit generate",
-    "migrate": "dotenv -e .env -- tsx server/database/migrate.ts",
+    "migrate": "dotenv -e .env -- tsx scripts/migrate.ts",
     "studio": "dotenv -e .env -- npx drizzle-kit studio"
   },
   "dependencies": {
