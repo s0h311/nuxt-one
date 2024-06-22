@@ -1,6 +1,8 @@
 import Stripe from 'stripe'
-import logger from '~/utils/logger'
+import logger from '~~/utils/logger'
 import { getProductDetails } from './productData'
+import { useCache } from '~~/server/cache'
+import { User } from '~~/server/database/schemas/auth'
 
 type StripeCheckoutQuery = {
   requestOrigin: string
@@ -10,18 +12,23 @@ type StripeCheckoutQuery = {
     allowPromotionCodes?: boolean
     additionalData: Record<string, string>
   }
+  userId: User['id']
 }
 
 const { payment } = useRuntimeConfig()
 const stripe = new Stripe(payment.stripe.secretKey)
 
-export async function initCheckout(query: StripeCheckoutQuery): Promise<string> {
-  const { priceId, isAddressRequired = false, allowPromotionCodes = false, additionalData } = query.checkoutOptions
+const cache = useCache()
 
+export async function initCheckout({
+  requestOrigin,
+  userId,
+  checkoutOptions: { priceId, isAddressRequired = false, allowPromotionCodes = false, additionalData },
+}: StripeCheckoutQuery): Promise<string> {
   const { isMetered, mode } = getProductDetails(priceId)
 
-  const successUrl = query.requestOrigin + '/checkout/success'
-  const cancelUrl = query.requestOrigin
+  const successUrl = requestOrigin + '/checkout/success'
+  const cancelUrl = requestOrigin
 
   try {
     const item: Stripe.Checkout.SessionCreateParams.LineItem = {
@@ -57,6 +64,8 @@ export async function initCheckout(query: StripeCheckoutQuery): Promise<string> 
     }
 
     const session = await stripe.checkout.sessions.create(sessionOptions)
+
+    cache.setItem(session.id, userId)
 
     if (!session.url) {
       throw logger.error('Unable to find stripe session url', 'StripeCheckoutService')

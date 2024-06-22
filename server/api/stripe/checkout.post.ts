@@ -1,3 +1,4 @@
+import { getServerSession, getToken } from '#auth'
 import { initCheckout } from './checkoutService'
 
 export default defineEventHandler(async (event): Promise<string | void> => {
@@ -9,5 +10,11 @@ export default defineEventHandler(async (event): Promise<string | void> => {
 
   const checkoutOptions = await readBody(event)
 
-  return await initCheckout({ requestOrigin, checkoutOptions })
+  const session = await getServerSession(event)
+
+  if (!session || !session.user) {
+    return setResponseStatus(event, 401)
+  }
+
+  return await initCheckout({ requestOrigin, checkoutOptions, userId: session.user.id })
 })

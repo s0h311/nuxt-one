@@ -3,20 +3,29 @@ import GoogleProvider from 'next-auth/providers/google'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { NuxtAuthHandler } from '#auth'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
-import { db } from '~/server/database/client'
-import { accounts, authenticators, sessions, users, verificationTokens } from '~/server/database/schemas/auth'
+import { db } from '~~/server/database/client'
+import { account, authenticator, session, user, verificationToken } from '~~/server/database/schemas/auth'
+import { DefaultSession } from 'next-auth'
 
 const { auth } = useRuntimeConfig()
+
+declare module 'next-auth' {
+  interface Session {
+    user?: {
+      id: string
+    } & DefaultSession['user']
+  }
+}
 
 export default NuxtAuthHandler({
   secret: auth.secret,
   // @ts-expect-error
   adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    authenticatorsTable: authenticators,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
+    usersTable: user,
+    accountsTable: account,
+    authenticatorsTable: authenticator,
+    sessionsTable: session,
+    verificationTokensTable: verificationToken,
   }),
   providers: [
     // @ts-expect-error
@@ -36,4 +45,14 @@ export default NuxtAuthHandler({
       version: '2.0',
     }),
   ],
+  callbacks: {
+    session({ session, user }) {
+      if (!session || !session.user) {
+        return session
+      }
+
+      session.user.id = user.id
+      return session
+    },
+  },
 })

@@ -1,5 +1,8 @@
 export default defineNuxtConfig({
   modules: ['@sidebase/nuxt-auth'],
+  future: {
+    compatibilityVersion: 4,
+  },
   devtools: { enabled: true },
   auth: {
     provider: {

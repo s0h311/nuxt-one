@@ -1,5 +1,5 @@
 import type Stripe from 'stripe'
-import { Subscription } from '~/server/database/schemas/public'
+import { Subscription } from '~~/server/database/schemas/public'
 
 type ProductDetails = {
   isMetered: boolean

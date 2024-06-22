@@ -1,33 +1,43 @@
-import { timestamp, text, pgSchema, pgEnum } from 'drizzle-orm/pg-core'
+import { timestamp, text, pgEnum, pgTable } from 'drizzle-orm/pg-core'
 
-const publicSchema = pgSchema('public')
+export const subscriptionTypeEnum = pgEnum('subscription_type', [
+  // TODO add your own subscription types here
+  'free',
+  'premium',
+])
 
-export const subscription = publicSchema.table('subscription', {
+export const paymentPeriodEnum = pgEnum('payment_period', [
+  // TODO add your own payment periods here
+  'monthly',
+  'yearly',
+  'lifetime',
+])
+
+export const subscription = pgTable('subscription', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  userId: text('user_id'),
+  userId: text('user_id').notNull(),
+  stripeCustomerId: text('stripe_customer_id').notNull(),
   createdAt: timestamp('created_ad', {
     mode: 'date',
     precision: 2,
     withTimezone: true,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .notNull(),
   lastPaymentAt: timestamp('last_payment_at', {
     mode: 'date',
     precision: 2,
     withTimezone: true,
   }),
-  type: pgEnum('subscription_type', [
-    // TODO add your own subscription types here
-    'free',
-    'premium',
-  ])('type'),
-  paymentPeriod: pgEnum('payment_period', [
-    // TODO add your own payment periods here
-    'monthly',
-    'yearly',
-    'lifetime',
-  ])('payment_period'),
+  type: subscriptionTypeEnum('type').notNull(),
+  paymentPeriod: paymentPeriodEnum('payment_period').notNull(),
+  deactivatedAt: timestamp('deactivated_at', {
+    mode: 'date',
+    precision: 2,
+    withTimezone: true,
+  }),
 })
 
 export type Subscription = typeof subscription.$inferSelect

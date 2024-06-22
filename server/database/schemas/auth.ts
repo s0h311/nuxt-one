@@ -5,7 +5,7 @@ type AdapterAccountType = Extract<ProviderType, 'oauth' | 'oidc' | 'email' | 'we
 
 const authSchema = pgSchema('auth')
 
-export const users = authSchema.table('user', {
+export const user = authSchema.table('user', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -15,12 +15,12 @@ export const users = authSchema.table('user', {
   image: text('image'),
 })
 
-export const accounts = authSchema.table(
+export const account = authSchema.table(
   'account',
   {
     userId: text('userId')
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
+      .references(() => user.id, { onDelete: 'cascade' }),
     type: text('type').$type<AdapterAccountType>().notNull(),
     provider: text('provider').notNull(),
     providerAccountId: text('providerAccountId').notNull(),
@@ -39,15 +39,15 @@ export const accounts = authSchema.table(
   })
 )
 
-export const sessions = authSchema.table('session', {
+export const session = authSchema.table('session', {
   sessionToken: text('sessionToken').primaryKey(),
   userId: text('userId')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
 })
 
-export const verificationTokens = authSchema.table(
+export const verificationToken = authSchema.table(
   'verificationToken',
   {
     identifier: text('identifier').notNull(),
@@ -61,13 +61,13 @@ export const verificationTokens = authSchema.table(
   })
 )
 
-export const authenticators = authSchema.table(
+export const authenticator = authSchema.table(
   'authenticator',
   {
     credentialID: text('credentialID').notNull().unique(),
     userId: text('userId')
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
+      .references(() => user.id, { onDelete: 'cascade' }),
     providerAccountId: text('providerAccountId').notNull(),
     credentialPublicKey: text('credentialPublicKey').notNull(),
     counter: integer('counter').notNull(),
@@ -81,3 +81,5 @@ export const authenticators = authSchema.table(
     }),
   })
 )
+
+export type User = typeof user.$inferSelect
