@@ -34,7 +34,14 @@ const { signIn, signOut, status, data } = useAuth()
 const email = ref<string>('')
 
 async function checkout(): Promise<void> {
-  await $fetch('api/stripe/checkout', { method: 'post' })
+  const checkoutUrl = await $fetch('api/stripe/checkout', {
+    method: 'post',
+    body: {
+      priceId: 'price_1PSPTTKDXBGuYX0kpVOpSB6t',
+    },
+  })
+
+  await navigateTo(checkoutUrl, { external: true })
 }
 </script>
 

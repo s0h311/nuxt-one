@@ -13,14 +13,14 @@ const productDetailsTest: Record<string, ProductDetails> = {
   price_1PSPTTKDXBGuYX0kpVOpSB6t: {
     isMetered: false,
     subscriptionType: 'premium',
-    mode: 'subscription',
-    paymentPeriod: 'monthly',
+    mode: 'payment',
+    paymentPeriod: 'lifetime',
   },
 }
 
 const productDetailsLive: Record<string, ProductDetails> = {
   // TODO add your live price ids here
-  price_1PSvm4KDXBGuYX0kizRrtexV: {
+  price_1PSPTTKDXBGuYX0kpVOpSB6t: {
     isMetered: false,
     subscriptionType: 'premium',
     mode: 'payment',

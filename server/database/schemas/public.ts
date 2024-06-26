@@ -19,7 +19,7 @@ export const subscription = pgTable('subscription', {
     .$defaultFn(() => crypto.randomUUID()),
   userId: text('user_id').notNull(),
   stripeCustomerId: text('stripe_customer_id').notNull(),
-  createdAt: timestamp('created_ad', {
+  createdAt: timestamp('created_at', {
     mode: 'date',
     precision: 2,
     withTimezone: true,

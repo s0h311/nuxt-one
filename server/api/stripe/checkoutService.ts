@@ -49,6 +49,7 @@ export async function initCheckout({
         'paypal',
         'card',
       ],
+      customer_creation: 'always',
     }
 
     if (isAddressRequired) {
