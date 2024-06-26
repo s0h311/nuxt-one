@@ -16,11 +16,22 @@
     <div>
       <button @click="checkout">CHECKOUT</button>
     </div>
+
+    <div>
+      <input
+        type="email"
+        v-model="email"
+      />
+
+      <button @click="signIn('magic-link', { email, callbackUrl: '/' })">Send magic link</button>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 const { signIn, signOut, status, data } = useAuth()
+
+const email = ref<string>('')
 
 async function checkout(): Promise<void> {
   await $fetch('api/stripe/checkout', { method: 'post' })

@@ -26,6 +26,13 @@ export default defineNuxtConfig({
         clientId: '',
         clientSecret: '',
       },
+      email: {
+        host: '',
+        port: '',
+        username: '',
+        password: '',
+        senderName: '',
+      },
     },
     payment: {
       stripe: {
