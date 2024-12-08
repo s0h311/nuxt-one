@@ -1,11 +1,11 @@
 # Installation
 
 ```bash
-npm i -g npm@latest
+npm i -g pnpm@latest
 ```
 
 ```bash
-npm i -g pino-pretty
+pnpm add -g pino-pretty
 ```
 
 ## Auth
